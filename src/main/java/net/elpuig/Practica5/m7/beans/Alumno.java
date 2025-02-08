@@ -25,7 +25,7 @@ public class Alumno {
 
     // Método estático para inicializar la conexión (se ejecuta una vez al inicio)
     static {
-        Conexion.setURL("jdbc:mysql://172.16.0.25/dbalumnos?user=mp7&password=secreto");
+        Conexion.setURL("jdbc:mysql://10.103.252.238:3306/dbalumnos?user=mp7&password=secreto&useSSL=true");
         conn = Conexion.getConexion();
     }
 
