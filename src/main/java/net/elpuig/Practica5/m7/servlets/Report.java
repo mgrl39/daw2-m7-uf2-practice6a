@@ -33,7 +33,7 @@ public class Report extends HttpServlet {
 private static final long serialVersionUID = 1L;
 
 public void init() throws ServletException {
-Conexion.setURL("jdbc:mysql://10.103.252.238:3306/dbalumnos?user=mp7&password=secreto&useSSL=true");
+Conexion.setURL("jdbc:mysql://10.103.252.238:3306/dbalumnos?user=mp7&password=secreto");
 }
 
 protected void service(HttpServletRequest request, HttpServletResponse response)
