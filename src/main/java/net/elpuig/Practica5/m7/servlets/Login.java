@@ -20,10 +20,7 @@ public class Login extends HttpServlet {
 		if (validarUsuario(usuarioIntro, request.getParameter("txtContrasenya")) != null) {
 			request.getSession().setAttribute("usuario", new Usuario(usuarioIntro));
 			response.sendRedirect("infosesion.jsp");
-		} else {
-			request.setAttribute("error", "Usuario o contraseña incorrecta");
-			request.getRequestDispatcher("acceso.jsp").forward(request, response);
-		}
+		} else request.getRequestDispatcher("acceso.jsp").forward(request, response);
 	}
 
 	// Nos devuelve el nombre del usuario si la pareja
