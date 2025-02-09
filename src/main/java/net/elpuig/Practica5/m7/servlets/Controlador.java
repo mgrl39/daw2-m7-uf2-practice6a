@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@WebServlet("/AlumnoServlet")
+@WebServlet("/Controlador")
 public class Controlador extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Set<String> ORDENES_VALIDAS = Set.of("ejecutar", "info", "desconectar");
@@ -29,15 +29,15 @@ public class Controlador extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 
-		String order = request.getParameter("order");
-		if (order != null) order = order.trim();
-		if (!validarOrden(order)) {
+		String operacion = request.getParameter("operacion");
+		if (operacion != null) operacion = operacion.trim();
+		if (!validarOrden(operacion)) {
 			out.println("INVALID VALUE 2");
 			return;
 		}
 
 		// Si la orden es "desconectar", no creamos una nueva sesión
-		if ("desconectar".equalsIgnoreCase(order)) {
+		if ("desconectar".equalsIgnoreCase(operacion)) {
 			HttpSession session = request.getSession(false);
 			if (session != null) {
 				session.invalidate();
@@ -53,7 +53,7 @@ public class Controlador extends HttpServlet {
 		session.setAttribute("ultimoAcceso", new java.util.Date(session.getLastAccessedTime()));
 		incrementarContadorSesion(session);
 
-		switch (order.toLowerCase()) {
+		switch (operacion.toLowerCase()) {
 		case "info":
 			procesarInfo(request, response, session);
 			break;
@@ -61,13 +61,13 @@ public class Controlador extends HttpServlet {
 			procesarConsultaSQL(request, response);
 			break;
 		default:
-			out.println("INVALID ORDER");
+			out.println("INVALID operacion");
 			break;
 		}
 	}
 
-	private boolean validarOrden(String order) {
-		return order != null && ORDENES_VALIDAS.contains(order.toLowerCase());
+	private boolean validarOrden(String operacion) {
+		return operacion != null && ORDENES_VALIDAS.contains(operacion.toLowerCase());
 	}
 
 	// ‘infosesion.jsp’ no hace nada extraño, sencillamente dibuja una tabla y
@@ -138,10 +138,7 @@ public class Controlador extends HttpServlet {
 			htmlTable += "</tr>";
 			for (Map<String, String> row : data) {
 				htmlTable += "<tr>";
-				for (String value : row.values()) {
-					htmlTable += "<td>" + value + "</td>";
-					// System.out.printf("testing " + value + "\n");
-				}
+				for (String value : row.values()) htmlTable += "<td>" + value + "</td>";
 				htmlTable += "</tr>";
 			}
 
@@ -178,13 +175,13 @@ public class Controlador extends HttpServlet {
 		response.setContentType("text/html");
 		out = response.getWriter();
 
-		String order = request.getParameter("order");
-		if (order == null) {
-			out.println("Error: No se ha recibido el parámetro 'order'");
+		String operacion = request.getParameter("operacion");
+		if (operacion == null) {
+			out.println("Error: No se ha recibido el parámetro 'operacion'");
 			return;
 		}
 
-		if ("alta".equalsIgnoreCase(order)) {
+		if ("alta".equalsIgnoreCase(operacion)) {
 			if (session.getAttribute("usuario") != null)
 				postWithSession(request, response);
 			else {
@@ -193,7 +190,7 @@ public class Controlador extends HttpServlet {
 				session.setAttribute("sesAlumnoCurso", request.getParameter("curso"));
 				request.getRequestDispatcher("/acceso.jsp").forward(request, response);
 			}
-		} else if ("validar".equalsIgnoreCase(order)) {
+		} else if ("validar".equalsIgnoreCase(operacion)) {
 			String user = validarUsuario(request.getParameter("txtUsuario"), request.getParameter("txtContrasenya"));
 			if (user == null) {
 				request.setAttribute("error", "Usuario o contraseña incorrecta");
@@ -224,7 +221,7 @@ public class Controlador extends HttpServlet {
 				}
 			}
 		} else {
-			out.println("Error: Valor de 'order' no válido.");
+			out.println("Error: Valor de 'operacion' no válido.");
 		}
 
 	}
