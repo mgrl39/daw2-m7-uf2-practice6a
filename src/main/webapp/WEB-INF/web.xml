@@ -93,8 +93,8 @@
 		<servlet-name>ResultadoAlias</servlet-name>
 		<url-pattern>/result</url-pattern>
 	</servlet-mapping>
-	
-		<servlet>
+
+	<servlet>
 		<servlet-name>DesconectadoAlias</servlet-name>
 		<jsp-file>/desconectado.jsp</jsp-file>
 	</servlet>
@@ -102,6 +102,11 @@
 		<servlet-name>DesconectadoAlias</servlet-name>
 		<url-pattern>/logout</url-pattern>
 	</servlet-mapping>
+
+	<error-page>
+		<error-code>404</error-code>
+		<location>/lost.jsp</location>
+	</error-page>
 
 
 </web-app>
