@@ -44,7 +44,7 @@ public class Controlador extends HttpServlet {
 			if (session != null) {
 				session.invalidate();
 			}
-			response.sendRedirect("desconectado.jsp");
+			response.sendRedirect("logout");
 			return;
 		}
 
@@ -91,7 +91,7 @@ public class Controlador extends HttpServlet {
 
 		contexto.setAttribute("usuariosConectados", usuariosConectados != null ? usuariosConectados : 0);
 		contexto.setAttribute("usuariosValidados", usuariosValidados != null ? usuariosValidados : 0);
-		request.getRequestDispatcher("/infosesion.jsp").forward(request, response);
+		request.getRequestDispatcher("info").forward(request, response);
 	}
 
 	private void procesarConsultaSQL(HttpServletRequest request, HttpServletResponse response)
@@ -108,7 +108,7 @@ public class Controlador extends HttpServlet {
 
 			if ("true".equals(request.getParameter("jstl"))) {
 				request.setAttribute("data", data);
-				request.getRequestDispatcher("index.jsp").forward(request, response);
+				request.getRequestDispatcher("result").forward(request, response);
 			} else
 				printSql(request, response);
 		} catch (RuntimeException e) {
@@ -189,7 +189,7 @@ public class Controlador extends HttpServlet {
 				session.setAttribute("sesAlumnoID", request.getParameter("id"));
 				session.setAttribute("sesAlumnoNombre", request.getParameter("nombre"));
 				session.setAttribute("sesAlumnoCurso", request.getParameter("curso"));
-				request.getRequestDispatcher("/acceso.jsp").forward(request, response);
+				request.getRequestDispatcher("login").forward(request, response);
 			}
 		} else if ("validar".equalsIgnoreCase(operacion)) {
 			String user = validarUsuario(request.getParameter("txtUsuario"), request.getParameter("txtContrasenya"));
@@ -197,7 +197,7 @@ public class Controlador extends HttpServlet {
 				String sesAlumnoID = (String) session.getAttribute("sesAlumnoID");
 				String sesAlumnoNombre = (String) session.getAttribute("sesAlumnoNombre");
 				String sesAlumnoCurso = (String) session.getAttribute("sesAlumnoCurso");
-				request.getRequestDispatcher("/error.jsp").forward(request, response);
+				request.getRequestDispatcher("error").forward(request, response);
 			} else {
 				Usuario usuario = new Usuario(user);
 				session.setAttribute("usuario", usuario);
@@ -210,7 +210,7 @@ public class Controlador extends HttpServlet {
 					PrintWriter out = response.getWriter();
 					out.println(webFormatter(nuevoAlumno.save() ? "Alumno añadido" : "Error al añadir el alumno",
 							Protocol.POST));
-					out.println("<a href='index.html'>Ir a la pantalla inicial</a>");
+					out.println("<a href='home'>Ir a la pantalla inicial</a>");
 
 					// Limpiar los datos de la sesión después del alta
 					session.removeAttribute("sesAlumnoID");
@@ -241,7 +241,7 @@ public class Controlador extends HttpServlet {
 			Alumno nuevoAlumno = new Alumno(Integer.parseInt(idStr), curso, nombre);
 			out.println(
 					webFormatter(nuevoAlumno.save() ? "Alumno añadido" : "Error al añadir el alumno", Protocol.POST));
-			out.println("<a href='index.html'>Ir a la pantalla inicial</a>");
+			out.println("<a href='home'>Ir a la pantalla inicial</a>");
 		} catch (NumberFormatException e) {
 			out.println(webFormatter("Error: El ID debe ser un número válido", Protocol.POST));
 		}
@@ -266,7 +266,7 @@ public class Controlador extends HttpServlet {
 			}
 		}
 		// Guardar el nuevo valor del contador
-		System.out.printf("NUMERO: %d%n", contadorAccesos);
+		// System.out.printf("NUMERO: %d%n", contadorAccesos);
 		sesion.setAttribute("contadorAccesos", contadorAccesos);
 	}
 

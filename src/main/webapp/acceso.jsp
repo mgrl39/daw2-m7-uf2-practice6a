@@ -50,7 +50,6 @@ input[type="submit"]:hover, input[type="reset"]:hover {
 	background-color: #b3b3ff;
 	cursor: pointer;
 }
-
 </style>
 </head>
 <body>
