@@ -142,7 +142,13 @@ public class Controlador extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		out = response.getWriter();
 
-		if (request.getParameter("order").equals("alta")) {
+	    String order = request.getParameter("order");
+		if (order == null) {
+			out.println("Error: No se ha recibido el parámetro 'order'");
+			return;
+		}
+
+		if ("alta".equalsIgnoreCase(order)) {
 			if (session.getAttribute("usuario") != null)
 				postWithSession(request, response);
 			else {
@@ -151,7 +157,7 @@ public class Controlador extends HttpServlet {
 				session.setAttribute("sesAlumnoCurso", request.getParameter("curso"));
 				request.getRequestDispatcher("/acceso.jsp").forward(request, response);
 			}
-		} else if (request.getParameter("order").equals("validar")) {
+		} else if ("validar".equalsIgnoreCase(order)) {
 			String user = validarUsuario(request.getParameter("txtUsuario"), request.getParameter("txtContrasenya"));
 			if (user == null) {
 				request.setAttribute("error", "Usuario o contraseña incorrecta");
@@ -163,10 +169,10 @@ public class Controlador extends HttpServlet {
 				String sesAlumnoNombre = (String) session.getAttribute("sesAlumnoNombre");
 				String sesAlumnoCurso = (String) session.getAttribute("sesAlumnoCurso");
 				if (sesAlumnoID != null && sesAlumnoNombre != null && sesAlumnoCurso != null) {
-					Alumno alumno = new Alumno(Integer.parseInt(sesAlumnoID), sesAlumnoNombre, sesAlumnoCurso);
+					Alumno nuevoAlumno = new Alumno(Integer.parseInt(sesAlumnoID), sesAlumnoNombre, sesAlumnoCurso);
 					response.setContentType("text/html");
 					PrintWriter out = response.getWriter();
-					out.println("Alumno añadido con éxito. Filas afectadas: 1");
+					out.println(webFormatter(nuevoAlumno.save() ? "Alumno añadido con éxito" : "Error al añadir el alumno", Protocol.POST));
 					out.println("<br><a href='index.html'>Ir a la pantalla inicial</a>");
 
 					// Limpiar los datos de la sesión después del alta
@@ -179,7 +185,9 @@ public class Controlador extends HttpServlet {
 					out.println("Error: No se encontraron datos del alumno en la sesión.");
 				}
 			}
-		}
+		} else {
+	        out.println("Error: Valor de 'order' no válido.");
+	    }
 
 	}
 
@@ -222,7 +230,7 @@ public class Controlador extends HttpServlet {
 		// Guardar el nuevo valor del contador
 		sesion.setAttribute("contadorAccesos", contadorAccesos);
 	}
-	
+
 	// Nos devuelve el nombre del usuario si la pareja
 	// nombre-passw es correcta
 	// Tendriamos que comparar con valores de la BD!
