@@ -34,4 +34,7 @@
 		<servlet-name>ImageServlet</servlet-name>
 		<url-pattern>/image</url-pattern>
 	</servlet-mapping>
+	<listener>
+		<listener-class>net.elpuig.Practica5.m7.webses.WebSessionListener</listener-class>
+	</listener>
 </web-app>
