@@ -5,21 +5,17 @@
 <title>Información de Sesión</title>
 <style>
 body {
-	background-color: #934993; /* Morado oscuro */
+	background-color: #934993;
 	color: white;
 	font-family: Arial, sans-serif;
 	text-align: center;
-}
-
-h1 {
-	color: #ffff99; /* Dorado */
 }
 
 table {
 	margin: auto;
 	border-collapse: collapse;
 	width: 60%;
-	background-color: #ffff99; /* Amarillo claro */
+	background-color: #ffff99;
 	color: black;
 }
 
@@ -30,15 +26,14 @@ th, td {
 }
 
 th {
-	background-color: #FFD700; /* Dorado */
+	background-color: #FFD700;
 }
 
 a {
-	color: #ADD8E6; /* Azul claro */
 	text-decoration: none;
-	font-weight: bold;
 	display: block;
 	margin-top: 20px;
+	text-decoration: underline;
 }
 
 a:hover {
@@ -50,35 +45,35 @@ a:hover {
 	<h1>Información de su Sesión</h1>
 	<table border="1">
 		<tr>
-			<td>Atributo</td>
-			<td>Valor</td>
+			<td style="color: #934993; font-weight: bold; text-align: center;">Atributo</td>
+			<td style="color: #934993; font-weight: bold; text-align: center;">Valor</td>
 		</tr>
 		<tr>
-			<td>Identificador</td>
+			<td style="color: #934993; font-weight: bold;">Identificador</td>
 			<td><%=session.getId()%></td>
 		</tr>
 		<tr>
-			<td>Fecha/hora creación</td>
+			<td style="color: #934993; font-weight: bold;">Fecha/hora creación</td>
 			<td><%=new Date(session.getCreationTime())%></td>
 		</tr>
 		<tr>
-			<td>Hora último acceso</td>
+			<td style="color: #934993; font-weight: bold;">Hora último acceso</td>
 			<td><%=new Date(session.getLastAccessedTime())%></td>
 		</tr>
 		<tr>
-			<td>Número previo de accesos</td>
-			<td><%=session.getAttribute("contadorAccessos") != null ? session.getAttribute("contadorAccessos") : 0%></td>
+			<td style="color: #934993; font-weight: bold;">Número previo de accesos</td>
+			<td><%=session.getAttribute("contadorAccesos") != null ? session.getAttribute("contadorAccesos") : 0%></td>
 		</tr>
 		<tr>
-			<td>Usuario</td>
+			<td style="color: #934993; font-weight: bold;">Usuario</td>
 			<td><%=session.getAttribute("usuario") != null ? session.getAttribute("usuario") : "No validado"%></td>
 		</tr>
 		<tr>
-			<td>Número de usuarios conectados</td>
+			<td style="color: #934993; font-weight: bold;">Número de usuarios conectados</td>
 			<td><%=application.getAttribute("usuariosConectados") != null ? application.getAttribute("usuariosConectados") : 0%></td>
 		</tr>
 		<tr>
-			<td>Número de usuarios validados</td>
+			<td style="color: #934993; font-weight: bold;">Número de usuarios validados</td>
 			<td><%=application.getAttribute("usuariosValidados") != null ? application.getAttribute("usuariosValidados") : 0%></td>
 		</tr>
 	</table>
