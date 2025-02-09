@@ -4,6 +4,7 @@ import net.elpuig.Practica5.m7.enums.Protocol;
 import net.elpuig.Practica5.m7.servlets.Login;
 import net.elpuig.Practica5.m7.beans.Alumno;
 import net.elpuig.Practica5.m7.beans.Usuario;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +28,9 @@ public class Controlador extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
+		session.setAttribute("idSesion", session.getId());
+		session.setAttribute("fechaCreacion", new java.util.Date(session.getCreationTime()));
+		session.setAttribute("ultimoAcceso", new java.util.Date(session.getLastAccessedTime()));
 		incrementarContadorSesion(session);
 
 		boolean condition;
@@ -44,11 +49,22 @@ public class Controlador extends HttpServlet {
 			return;
 		}
 		if ("info".equalsIgnoreCase(order)) {
-			try {
-				request.getRequestDispatcher("/infosesion.jsp").forward(request, response);
-			} catch (Exception e) {
-				out.println("Error al redirigir: " + e.getMessage());
-			}
+			HttpSession sesion = request.getSession();
+
+			sesion.setAttribute("idSesion", sesion.getId());
+			sesion.setAttribute("fechaCreacion", new Date(sesion.getCreationTime()));
+			sesion.setAttribute("ultimoAcceso", new Date(sesion.getLastAccessedTime()));
+
+			Integer contadorAccessos = (Integer) sesion.getAttribute("contadorAccessos");
+			sesion.setAttribute("contadorAccessos", contadorAccessos != null ? contadorAccessos : 0);
+
+			ServletContext contexto = getServletContext();
+			Integer usuariosConectados = (Integer) contexto.getAttribute("usuariosConectados");
+			Integer usuariosValidados = (Integer) contexto.getAttribute("usuariosValidados");
+
+			contexto.setAttribute("usuariosConectados", usuariosConectados != null ? usuariosConectados : 0);
+			contexto.setAttribute("usuariosValidados", usuariosValidados != null ? usuariosValidados : 0);
+			request.getRequestDispatcher("/infosesion.jsp").forward(request, response);
 			return;
 		} else if ("desconectar".equalsIgnoreCase(order)) {
 			session.invalidate();
@@ -99,19 +115,19 @@ public class Controlador extends HttpServlet {
 			for (String columnName : data.get(0).keySet()) {
 				htmlTable += "<th>" + columnName + "</th>";
 			}
-			System.out.printf(htmlTable + '\n');
+			// System.out.printf(htmlTable + '\n');
 			htmlTable += "</tr>";
 			for (Map<String, String> row : data) {
 				htmlTable += "<tr>";
 				for (String value : row.values()) {
 					htmlTable += "<td>" + value + "</td>";
-					System.out.printf("testing " + value + "\n");
+					// System.out.printf("testing " + value + "\n");
 				}
 				htmlTable += "</tr>";
 			}
 
 			htmlTable += "</table>";
-			System.out.printf(htmlTable + '\n');
+			// System.out.printf(htmlTable + '\n');
 			out.println(webFormatter(htmlTable, Protocol.GET));
 		} catch (RuntimeException e) {
 			out.println(webFormatter(
@@ -142,7 +158,7 @@ public class Controlador extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		out = response.getWriter();
 
-	    String order = request.getParameter("order");
+		String order = request.getParameter("order");
 		if (order == null) {
 			out.println("Error: No se ha recibido el parámetro 'order'");
 			return;
@@ -172,7 +188,9 @@ public class Controlador extends HttpServlet {
 					Alumno nuevoAlumno = new Alumno(Integer.parseInt(sesAlumnoID), sesAlumnoNombre, sesAlumnoCurso);
 					response.setContentType("text/html");
 					PrintWriter out = response.getWriter();
-					out.println(webFormatter(nuevoAlumno.save() ? "Alumno añadido con éxito" : "Error al añadir el alumno", Protocol.POST));
+					out.println(
+							webFormatter(nuevoAlumno.save() ? "Alumno añadido con éxito" : "Error al añadir el alumno",
+									Protocol.POST));
 					out.println("<br><a href='index.html'>Ir a la pantalla inicial</a>");
 
 					// Limpiar los datos de la sesión después del alta
@@ -186,8 +204,8 @@ public class Controlador extends HttpServlet {
 				}
 			}
 		} else {
-	        out.println("Error: Valor de 'order' no válido.");
-	    }
+			out.println("Error: Valor de 'order' no válido.");
+		}
 
 	}
 

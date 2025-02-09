@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java"
+	import="java.util.Date"%>
 <html>
 <head>
 <title>Información de Sesión</title>
@@ -49,32 +50,32 @@ a:hover {
 	<h1>Información de Sesión</h1>
 	<table border="1">
 		<tr>
-			<td>Identificador de sesión:</td>
-			<td>${sessionScope.idSesion}</td>
+			<td>Identificador</td>
+			<td><%=session.getId()%></td>
 		</tr>
 		<tr>
-			<td>Fecha de creación:</td>
-			<td>${sessionScope.fechaCreacion}</td>
+			<td>Fecha/hora creación</td>
+			<td><%=new Date(session.getCreationTime())%></td>
 		</tr>
 		<tr>
-			<td>Último acceso:</td>
-			<td>${sessionScope.ultimoAcceso}</td>
+			<td>Último acceso</td>
+			<td><%=new Date(session.getLastAccessedTime())%></td>
 		</tr>
 		<tr>
-			<td>Número de accesos:</td>
-			<td>${sessionScope.contadorAccessos}</td>
+			<td>Número de accesos</td>
+			<td><%=session.getAttribute("contadorAccessos") != null ? session.getAttribute("contadorAccessos") : 0%></td>
 		</tr>
 		<tr>
-			<td>Usuario:</td>
-			<td>${not empty sessionScope.usuario ? sessionScope.usuario.nombre : "No validado"}</td>
+			<td>Usuario</td>
+			<td><%=session.getAttribute("usuario") != null ? session.getAttribute("usuario") : "No validado"%></td>
 		</tr>
 		<tr>
-			<td>Usuarios conectados:</td>
-			<td>${applicationScope.usuariosConectados}</td>
+			<td>Usuarios conectados</td>
+			<td><%=application.getAttribute("usuariosConectados") != null ? application.getAttribute("usuariosConectados") : 0%></td>
 		</tr>
 		<tr>
-			<td>Usuarios validados:</td>
-			<td>${applicationScope.usuariosValidados}</td>
+			<td>Usuarios validados</td>
+			<td><%=application.getAttribute("usuariosValidados") != null ? application.getAttribute("usuariosValidados") : 0%></td>
 		</tr>
 	</table>
 	<a href="index.html">Ir a la pantalla inicial</a>
