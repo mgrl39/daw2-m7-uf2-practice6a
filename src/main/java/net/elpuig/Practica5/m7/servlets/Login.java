@@ -18,7 +18,7 @@ public class Login extends HttpServlet {
 			throws ServletException, IOException {
 		String usuarioIntro = request.getParameter("txtUsuario");
 
-		if ("daniel".equals(usuarioIntro) && "colomer".equals(request.getParameter("txtContrasenya"))) {
+		if (validarUsuario(usuarioIntro, request.getParameter("txtContrasenya")) != null) {
 			request.getSession().setAttribute("usuario", new Usuario(usuarioIntro));
 			response.sendRedirect("infosesion.jsp");
 		} else {

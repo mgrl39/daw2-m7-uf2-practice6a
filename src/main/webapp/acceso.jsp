@@ -8,11 +8,11 @@
 	<c:if test="${not empty error}">
 		<p style="color: red;">${error}</p>
 	</c:if>
-	<form action="Servlet" method="post">
-		<input type="hidden" name="operacion" value="validar">
+	<form action=AlumnoServlet method="post">
+		<input type="hidden" name="operacion">
 		Usuario: <input type="text" name="txtUsuario" required><br>	
 		Contraseña: <input type="password" name="txtContrasenya" required><br>
-		<input type="submit" value="Aceptar">
+		<input type="submit" value="validar">
 	</form>
 	<a href="index.html">Volver</a>
 </body>

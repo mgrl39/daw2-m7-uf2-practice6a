@@ -59,7 +59,7 @@ h3 {
 			required> <label for="curso">Curso:</label> <input
 			type="text" name="curso" required> <label for="nombre">Nombre:</label>
 		<input type="text" name="nombre" required><br> <br>
-		<button type="submit">Alta Alumno</button>
+		<button type="submit" name="order" value="alta">Alta Alumno</button>
 	</form>
 
 	<h2>Informes</h2>
@@ -90,7 +90,7 @@ h3 {
 
 	window.onload = function() {
 		console.log(document.cookie);
-		console.log(document.cookie.split(';'));
+		console.log(document.cookie.split(';'))
 		let sessionId = getCookie("JSESSIONID");
 		let logoutContainer = document.getElementById("logoutContainer");
 		if (sessionId) logoutContainer.innerHTML = '<a href="javascript:desconectar()"> Desconectar </a>';
