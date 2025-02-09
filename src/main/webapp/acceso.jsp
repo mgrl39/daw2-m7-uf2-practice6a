@@ -65,8 +65,8 @@ input[type="submit"]:hover, input[type="reset"]:hover {
 			<p style="color: red;">${error}</p>
 		</c:if>
 
-		<form action="AlumnoServlet" method="post">
-			<input type="hidden" name="order" value="validar">
+		<form action="Controlador" method="post">
+			<input type="hidden" name="operacion" value="validar">
 			<table>
 				<tr>
 					<td>Usuario</td>
