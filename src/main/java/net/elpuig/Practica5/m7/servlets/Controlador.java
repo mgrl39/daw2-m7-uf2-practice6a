@@ -1,7 +1,9 @@
 package net.elpuig.Practica5.m7.servlets;
 
 import net.elpuig.Practica5.m7.enums.Protocol;
+import net.elpuig.Practica5.m7.servlets.Login;
 import net.elpuig.Practica5.m7.beans.Alumno;
+import net.elpuig.Practica5.m7.beans.Usuario;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -25,34 +27,36 @@ public class Controlador extends HttpServlet {
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		incrementarContadorSesion(session);
-		
+
 		boolean condition;
-		
+
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 
 		String order = request.getParameter("order");
-		if (order != null) order = order.trim();
-		System.out.printf("Valor recibido de 'order': [ %s ]", order);
-		condition = (!"Ejecutar".equalsIgnoreCase(order) && !"info".equalsIgnoreCase(order)) && !"desconectar".equalsIgnoreCase(order);
+		if (order != null)
+			order = order.trim();
+		System.out.printf("Valor recibido de 'order': [ %s ]%n", order);
+		condition = (!"Ejecutar".equalsIgnoreCase(order) && !"info".equalsIgnoreCase(order))
+				&& !"desconectar".equalsIgnoreCase(order);
 		if (order == null || order.isEmpty() || condition) {
 			out.println("INVALID VALUE 2");
-			return ;
+			return;
 		}
 		if ("info".equalsIgnoreCase(order)) {
-		    try {
-		        request.getRequestDispatcher("/infosesion.jsp").forward(request, response);
-		    } catch (Exception e) {
-		        out.println("Error al redirigir: " + e.getMessage());
-		    }
-		    return;
+			try {
+				request.getRequestDispatcher("/infosesion.jsp").forward(request, response);
+			} catch (Exception e) {
+				out.println("Error al redirigir: " + e.getMessage());
+			}
+			return;
 		} else if ("desconectar".equalsIgnoreCase(order)) {
 			session.invalidate();
-		    try {
-		        request.getRequestDispatcher("/infosesion.jsp").forward(request, response);
-		    } catch (Exception e) {
-		        out.println("Error al redirigir: " + e.getMessage());
-		    }
+			try {
+				request.getRequestDispatcher("/desconectado.jsp").forward(request, response);
+			} catch (Exception e) {
+				out.println("Error al redirigir: " + e.getMessage());
+			}
 		}
 
 		String sql = request.getParameter("sql");
@@ -135,11 +139,56 @@ public class Controlador extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setContentType("text/html");
+		HttpSession session = request.getSession(true);
 		out = response.getWriter();
+
+		if (request.getParameter("order").equals("alta")) {
+			if (session.getAttribute("usuario") != null)
+				postWithSession(request, response);
+			else {
+				session.setAttribute("sesAlumnoID", request.getParameter("id"));
+				session.setAttribute("sesAlumnoNombre", request.getParameter("nombre"));
+				session.setAttribute("sesAlumnoCurso", request.getParameter("curso"));
+				request.getRequestDispatcher("/acceso.jsp").forward(request, response);
+			}
+		} else if (request.getParameter("order").equals("validar")) {
+			String user = validarUsuario(request.getParameter("txtUsuario"), request.getParameter("txtContrasenya"));
+			if (user == null) {
+				request.setAttribute("error", "Usuario o contraseña incorrecta");
+				request.getRequestDispatcher("/acceso.jsp").forward(request, response);
+			} else {
+				Usuario usuario = new Usuario(user);
+				session.setAttribute("usuario", usuario);
+				String sesAlumnoID = (String) session.getAttribute("sesAlumnoID");
+				String sesAlumnoNombre = (String) session.getAttribute("sesAlumnoNombre");
+				String sesAlumnoCurso = (String) session.getAttribute("sesAlumnoCurso");
+				if (sesAlumnoID != null && sesAlumnoNombre != null && sesAlumnoCurso != null) {
+					Alumno alumno = new Alumno(Integer.parseInt(sesAlumnoID), sesAlumnoNombre, sesAlumnoCurso);
+					response.setContentType("text/html");
+					PrintWriter out = response.getWriter();
+					out.println("Alumno añadido con éxito. Filas afectadas: 1");
+					out.println("<br><a href='index.html'>Ir a la pantalla inicial</a>");
+
+					// Limpiar los datos de la sesión después del alta
+					session.removeAttribute("sesAlumnoID");
+					session.removeAttribute("sesAlumnoNombre");
+					session.removeAttribute("sesAlumnoCurso");
+				} else {
+					response.setContentType("text/html");
+					PrintWriter out = response.getWriter();
+					out.println("Error: No se encontraron datos del alumno en la sesión.");
+				}
+			}
+		}
+
+	}
+
+	private void postWithSession(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String idStr = request.getParameter("id");
+		String nombre = request.getParameter("nombre");
+		String curso = request.getParameter("curso");
 		try {
-			String idStr = request.getParameter("id");
-			String curso = request.getParameter("curso");
-			String nombre = request.getParameter("nombre");
 			if ((isNullOrEmpty(idStr) || isNullOrEmpty(curso)) || isNullOrEmpty(nombre)) {
 				out.println(webFormatter("Todos los campos son obligatorios", Protocol.POST));
 				return;
@@ -173,5 +222,16 @@ public class Controlador extends HttpServlet {
 		// Guardar el nuevo valor del contador
 		sesion.setAttribute("contadorAccesos", contadorAccesos);
 	}
+	
+	// Nos devuelve el nombre del usuario si la pareja
+	// nombre-passw es correcta
+	// Tendriamos que comparar con valores de la BD!
+	private String validarUsuario(String usuarioIntro, String passwIntro) {
+		String retorno = null;
 
+		if (usuarioIntro.equals("daniel") && passwIntro.equals("daniel")) {
+			retorno = usuarioIntro;
+		}
+		return retorno;
+	}
 }
