@@ -193,8 +193,10 @@ public class Controlador extends HttpServlet {
 		} else if ("validar".equalsIgnoreCase(operacion)) {
 			String user = validarUsuario(request.getParameter("txtUsuario"), request.getParameter("txtContrasenya"));
 			if (user == null) {
-				request.setAttribute("error", "Usuario o contraseña incorrecta");
-				request.getRequestDispatcher("/acceso.jsp").forward(request, response);
+				String sesAlumnoID = (String) session.getAttribute("sesAlumnoID");
+				String sesAlumnoNombre = (String) session.getAttribute("sesAlumnoNombre");
+				String sesAlumnoCurso = (String) session.getAttribute("sesAlumnoCurso");
+				request.getRequestDispatcher("/error.jsp").forward(request, response);
 			} else {
 				Usuario usuario = new Usuario(user);
 				session.setAttribute("usuario", usuario);
