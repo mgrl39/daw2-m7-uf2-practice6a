@@ -5,8 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Practica 3 Gestión de Alumnos</title>
-<!-- 25 de novembre de 2024  -->
+<title>Practica 6B Gestión de Alumnos</title>
 <style>
 body {
 	background-color: #934993;

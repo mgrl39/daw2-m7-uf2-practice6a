@@ -35,6 +35,7 @@ public class Controlador extends HttpServlet {
 			operacion = operacion.trim();
 		if (!validarOrden(operacion)) {
 			out.println(webFormatter("Operacion invalida.", Protocol.GET));
+			out.println("<a href='home'>Ir a la pantalla inicial</a>");
 			return;
 		}
 
@@ -63,7 +64,8 @@ public class Controlador extends HttpServlet {
 			procesarConsultaSQL(request, response);
 			break;
 		default:
-			out.println(webFormatter("INVALID operacion", Protocol.GET));
+			out.println(webFormatter("operacion invalida", Protocol.GET));
+			out.println("<a href='home'>Ir a la pantalla inicial</a>");
 			break;
 		}
 	}
@@ -101,6 +103,7 @@ public class Controlador extends HttpServlet {
 		if (isNullOrEmpty(sql)) {
 			out.println(webFormatter("<p style=\"color: red\">Error: No se proporcionó ninguna consulta SQL</p>",
 					Protocol.GET));
+			out.println("<a href='home'>Ir a la pantalla inicial</a>");
 			return;
 		}
 		try {
@@ -112,7 +115,8 @@ public class Controlador extends HttpServlet {
 			} else
 				printSql(request, response);
 		} catch (RuntimeException e) {
-			out.println("<p style=\"color: red\">Error al ejecutar la consulta: " + e.getMessage() + "</p>");
+			out.println(webFormatter("<p style=\"color: red\">Error al ejecutar la consulta: " + e.getMessage() + "</p>", Protocol.GET));
+			out.println("<a href='home'>Ir a la pantalla inicial</a>");
 		}
 	}
 
