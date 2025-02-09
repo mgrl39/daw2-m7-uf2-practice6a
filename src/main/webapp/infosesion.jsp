@@ -42,7 +42,7 @@ a:hover {
 </style>
 </head>
 <body>
-	<h1>Información de su Sesión</h1>
+	<h1>Información de su sesión</h1>
 	<table border="1">
 		<tr>
 			<td colspan="2"
@@ -88,6 +88,6 @@ a:hover {
 			<td><%=application.getAttribute("usuariosValidados") != null ? application.getAttribute("usuariosValidados") : 0%></td>
 		</tr>
 	</table>
-	<a href="index.html">Ir a la pantalla inicial</a>
+	<a href="home">Ir a la pantalla inicial</a>
 </body>
 </html>

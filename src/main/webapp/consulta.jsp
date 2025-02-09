@@ -23,6 +23,6 @@
 			</tr>
 		</c:forEach>
 	</table>
-	<a href="index.html">Volver</a>
+	<a href="home">Volver</a>
 </body>
 </html>

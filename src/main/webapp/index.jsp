@@ -1,73 +1,88 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html>
+<html lang="es">
 
-<html>
 <head>
-<title>Resultados SQL</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practica 3 Gestión de Alumnos</title>
+<!-- 25 de novembre de 2024  -->
 <style>
 body {
-    background-color: #ffff9d;
+	background-color: #934993;
 }
 
 h1 {
-    color: #00007e;
-    text-align: center;
+	text-align: center;
 }
 
-hr {
-    color: #00007e;
+h1, h2, hr, label, h3, span {
+	color: #FFFFFF;
 }
 
-p {
-    color: #00007e;
+form label {
+	font-weight: bold;
 }
 
-strong {
-    color: #FF0000;
+h3 {
+	margin-bottom: 0;
 }
 
-table {
-    border-collapse: collapse;
-    width: 100%;
+.decisio {
+	color: white;
 }
-
-th, td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
 </style>
 </head>
 <body>
+	<h1>Gestión de estudiantes</h1>
+	<a href="Controlador?operacion=info">Informacion de sesion</a>
+	<a href="javascript:desconectar()">Desconectar</a>
+	<h2>Consultas</h2>
+	<hr>
+	<br>
+	<form action="Controlador" method="get">
+		<label for="sql">Consulta</label> <input id="sql" name="sql" required
+			value="SELECT * FROM alumnos;"> <input type="submit"
+			name="operacion" value="Ejecutar">
+		<h3>OPCIONES</h3>
+		<br> <label>Técnica JSTL en resultados consulta</label> <input
+			name="jstl" value="true" type="radio"> <span class="decisio">Si</span>
+		<input name="jstl" value="false" type="radio" checked> <span
+			class="decisio">No</span>
+	</form>
 
-	<h2>Resultados de la consulta</h2>
+	<h2>Modificaciones</h2>
+	<hr>
+	<br>
+	<form action="Controlador" method="post">
+		<label for="id">ID Alumno</label> <input type="number" name="id"
+			required> <label for="curso">Curso:</label> <input
+			type="text" name="curso" required> <label for="nombre">Nombre:</label>
+		<input type="text" name="nombre" required><br> <br>
+		<button type="submit" name="operacion" value="alta">Alta
+			Alumno</button>
+	</form>
 
-	<c:choose>
-		<c:when test="${empty data}">
-			<p style="color: blue;">No se encontraron resultados.</p>
-		</c:when>
-		<c:otherwise>
-			<table>
-				<tr>
-					<c:forEach var="column" items="${data[0].keySet()}">
-						<th>${column}</th>
-					</c:forEach>
-				</tr>
-				<c:forEach var="row" items="${data}">
-					<tr>
-						<c:forEach var="value" items="${row.values()}">
-							<td>${value}</td>
-						</c:forEach>
-					</tr>
-				</c:forEach>
-			</table>
-		</c:otherwise>
-	</c:choose>
+	<h2>Informes</h2>
+	<form action="informe" method="get">
+		<input type="radio" id="optInformesPdf" name="optInformes"
+			value="application/pdf" checked /> <label for="formatPdf">PDF</label>
+		<input type="radio" id="optInformesExcel" name="optInformes"
+			value="application/vnd.ms-excel" /> <label for="formatExcel">Excel</label>
+		<input type="radio" id="optInformesWord" name="optInformes"
+			value="application/msword" /> <label for="formatWord">Word</label> <input
+			type="radio" id="optInformesHtml" name="optInformes" value="html" />
+		<label for="formatHtml">HTML</label><br> <br> <input
+			type="submit" value="Generar Informe" />
+	</form>
 
 </body>
+<script>
+	function desconectar() {
+		var log_out = confirm("Con esta accion se finaliza la sesion actual ¿Esta seguro?");
+		if (log_out)
+			window.location = "Controlador?operacion=desconectar";
+	}
+</script>
+
 </html>
