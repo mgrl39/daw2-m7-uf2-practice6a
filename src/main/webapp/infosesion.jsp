@@ -2,7 +2,7 @@
 	import="java.util.Date"%>
 <html>
 <head>
-<title>Información de Sesión</title>
+<title>Información de sesión</title>
 <style>
 body {
 	background-color: #934993;
@@ -37,13 +37,19 @@ a {
 }
 
 a:hover {
-	text-decoration: underline;
+	
 }
 </style>
 </head>
 <body>
 	<h1>Información de su Sesión</h1>
 	<table border="1">
+		<tr>
+			<td colspan="2"
+				style="color: #934993; font-weight: bold; text-align: center;">
+				Información
+		</tr>
+
 		<tr>
 			<td style="color: #934993; font-weight: bold; text-align: center;">Atributo</td>
 			<td style="color: #934993; font-weight: bold; text-align: center;">Valor</td>
@@ -53,15 +59,18 @@ a:hover {
 			<td><%=session.getId()%></td>
 		</tr>
 		<tr>
-			<td style="color: #934993; font-weight: bold;">Fecha/hora creación</td>
+			<td style="color: #934993; font-weight: bold;">Fecha/hora
+				creación</td>
 			<td><%=new Date(session.getCreationTime())%></td>
 		</tr>
 		<tr>
-			<td style="color: #934993; font-weight: bold;">Hora último acceso</td>
+			<td style="color: #934993; font-weight: bold;">Hora último
+				acceso</td>
 			<td><%=new Date(session.getLastAccessedTime())%></td>
 		</tr>
 		<tr>
-			<td style="color: #934993; font-weight: bold;">Número previo de accesos</td>
+			<td style="color: #934993; font-weight: bold;">Número previo de
+				accesos</td>
 			<td><%=session.getAttribute("contadorAccesos") != null ? session.getAttribute("contadorAccesos") : 0%></td>
 		</tr>
 		<tr>
@@ -69,11 +78,13 @@ a:hover {
 			<td><%=session.getAttribute("usuario") != null ? session.getAttribute("usuario") : "No validado"%></td>
 		</tr>
 		<tr>
-			<td style="color: #934993; font-weight: bold;">Número de usuarios conectados</td>
+			<td style="color: #934993; font-weight: bold;">Número de
+				usuarios conectados</td>
 			<td><%=application.getAttribute("usuariosConectados") != null ? application.getAttribute("usuariosConectados") : 0%></td>
 		</tr>
 		<tr>
-			<td style="color: #934993; font-weight: bold;">Número de usuarios validados</td>
+			<td style="color: #934993; font-weight: bold;">Número de
+				usuarios validados</td>
 			<td><%=application.getAttribute("usuariosValidados") != null ? application.getAttribute("usuariosValidados") : 0%></td>
 		</tr>
 	</table>

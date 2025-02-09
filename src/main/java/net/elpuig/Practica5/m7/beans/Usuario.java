@@ -23,9 +23,9 @@ public class Usuario implements HttpSessionBindingListener {
 	}
 
 	@Override
-	public void valueBound(HttpSessionBindingEvent event) {
-		System.out.println("Usuario añadido a la sesión. ID: " + event.getSession().getId());
-		ServletContext context = event.getSession().getServletContext();
+	public void valueBound(HttpSessionBindingEvent arg0) {
+		System.out.println("Usuario añadido a la sesión. ID: " + arg0.getSession().getId());
+		ServletContext context = arg0.getSession().getServletContext();
 		synchronized (context) {
 			Integer usuariosValidados = (Integer) context.getAttribute("usuariosValidados");
 			context.setAttribute("usuariosValidados", (usuariosValidados == null) ? 1 : ++usuariosValidados);
@@ -33,9 +33,9 @@ public class Usuario implements HttpSessionBindingListener {
 	}
 
 	@Override
-	public void valueUnbound(HttpSessionBindingEvent event) {
-		System.out.println("Usuario eliminado de la sesión. ID: " + event.getSession().getId());
-		ServletContext context = event.getSession().getServletContext();
+	public void valueUnbound(HttpSessionBindingEvent arg0) {
+		System.out.println("Usuario eliminado de la sesión. ID: " + arg0.getSession().getId());
+		ServletContext context = arg0.getSession().getServletContext();
 		synchronized (context) {
 			Integer usuariosValidados = (Integer) context.getAttribute("usuariosValidados");
 			context.setAttribute("usuariosValidados",
