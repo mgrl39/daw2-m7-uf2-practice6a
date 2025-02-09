@@ -35,7 +35,7 @@ h3 {
 <body>
 	<h1>Gestión de estudiantes</h1>
 	<a href="AlumnoServlet?order=info">Informacion de sesion</a>
-	<div id="logoutContainer"></div> <!-- Aquí se insertará el botón solo si hay sesión activa -->
+	<a href="javascript:desconectar()">Desconectar</a>
 	<h2>Consultas</h2>
 	<hr>
 	<br>
@@ -44,11 +44,9 @@ h3 {
 			value="SELECT * FROM alumnos;"> <input type="submit"
 			name="order" value="Ejecutar">
 		<h3>OPCIONES</h3>
-		<br> <label>Técnica JSTL en resultados consulta</label> <input
-			name="jstl" value="true" type="radio"> <span class="decisio">Si</span>
-		<input name="jstl" value="false" type="radio"> <span
-			class="decisio" checked>No</span>
-
+		<br> <label>Técnica JSTL en resultados consulta</label> 
+		<input name="jstl" value="true" type="radio"> <span class="decisio">Si</span>
+		<input name="jstl" value="false" type="radio"> <span class="decisio" checked>No</span>
 	</form>
 
 	<h2>Modificaciones</h2>
@@ -77,30 +75,10 @@ h3 {
 
 </body>
 <script>
-	function getCookie(name) {
-		let cookies = document.cookie.split(';');
-		for (let i = 0; i < cookies.length; i++) {
-			let cookie = cookies[i].trim();
-			if (cookie.startsWith(name + '=')) {
-				return cookie.split('=')[1];
-			}
-		}
-		return null;
-	}
-
-	window.onload = function() {
-		console.log(document.cookie);
-		console.log(document.cookie.split(';'))
-		let sessionId = getCookie("JSESSIONID");
-		let logoutContainer = document.getElementById("logoutContainer");
-		if (sessionId) logoutContainer.innerHTML = '<a href="javascript:desconectar()"> Desconectar </a>';
-		else logoutContainer.innerHTML = "";
-	};
-
 	function desconectar() {
 		var log_out = confirm("Con esta accion se finaliza la sesion actual ¿Esta seguro?");
 		if (log_out)
-			window.location = "AlumnoServlet?operacion=desconectar";
+			window.location = "AlumnoServlet?order=desconectar";
 	}
 </script>
 
