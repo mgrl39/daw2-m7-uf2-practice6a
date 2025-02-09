@@ -1,7 +1,6 @@
 package net.elpuig.Practica5.m7.servlets;
 
 import net.elpuig.Practica5.m7.enums.Protocol;
-import net.elpuig.Practica5.m7.servlets.Login;
 import net.elpuig.Practica5.m7.beans.Alumno;
 import net.elpuig.Practica5.m7.beans.Usuario;
 import jakarta.servlet.ServletContext;
@@ -27,6 +26,7 @@ public class Controlador extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		// Creación de la sesión. Si ya existe la utiliza
 		HttpSession session = request.getSession();
 		session.setAttribute("idSesion", session.getId());
 		session.setAttribute("fechaCreacion", new java.util.Date(session.getCreationTime()));
@@ -48,6 +48,7 @@ public class Controlador extends HttpServlet {
 			out.println("INVALID VALUE 2");
 			return;
 		}
+		// Cuando el servlet reconoce a la operación ‘info’ redirecciona el flujo a una página jsp que he llamado ‘infosesion.jsp’
 		if ("info".equalsIgnoreCase(order)) {
 			HttpSession sesion = request.getSession();
 
@@ -64,6 +65,7 @@ public class Controlador extends HttpServlet {
 
 			contexto.setAttribute("usuariosConectados", usuariosConectados != null ? usuariosConectados : 0);
 			contexto.setAttribute("usuariosValidados", usuariosValidados != null ? usuariosValidados : 0);
+			// ‘infosesion.jsp’ no hace nada extraño, sencillamente dibuja una tabla y muestra los valores deseados de la sesión. 
 			request.getRequestDispatcher("/infosesion.jsp").forward(request, response);
 			return;
 		} else if ("desconectar".equalsIgnoreCase(order)) {
@@ -154,8 +156,9 @@ public class Controlador extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setContentType("text/html");
+		// Creación de la sesión. Si ya existe la utiliza
 		HttpSession session = request.getSession(true);
+		response.setContentType("text/html");
 		out = response.getWriter();
 
 		String order = request.getParameter("order");

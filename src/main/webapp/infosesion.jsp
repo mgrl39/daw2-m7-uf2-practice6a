@@ -47,8 +47,12 @@ a:hover {
 </style>
 </head>
 <body>
-	<h1>Información de Sesión</h1>
+	<h1>Información de su Sesión</h1>
 	<table border="1">
+		<tr>
+			<td>Atributo</td>
+			<td>Valor</td>
+		</tr>
 		<tr>
 			<td>Identificador</td>
 			<td><%=session.getId()%></td>
@@ -58,11 +62,11 @@ a:hover {
 			<td><%=new Date(session.getCreationTime())%></td>
 		</tr>
 		<tr>
-			<td>Último acceso</td>
+			<td>Hora último acceso</td>
 			<td><%=new Date(session.getLastAccessedTime())%></td>
 		</tr>
 		<tr>
-			<td>Número de accesos</td>
+			<td>Número previo de accesos</td>
 			<td><%=session.getAttribute("contadorAccessos") != null ? session.getAttribute("contadorAccessos") : 0%></td>
 		</tr>
 		<tr>
@@ -70,11 +74,11 @@ a:hover {
 			<td><%=session.getAttribute("usuario") != null ? session.getAttribute("usuario") : "No validado"%></td>
 		</tr>
 		<tr>
-			<td>Usuarios conectados</td>
+			<td>Número de usuarios conectados</td>
 			<td><%=application.getAttribute("usuariosConectados") != null ? application.getAttribute("usuariosConectados") : 0%></td>
 		</tr>
 		<tr>
-			<td>Usuarios validados</td>
+			<td>Número de usuarios validados</td>
 			<td><%=application.getAttribute("usuariosValidados") != null ? application.getAttribute("usuariosValidados") : 0%></td>
 		</tr>
 	</table>
