@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// 25 de novembre de 2024
 @WebServlet("/AlumnoServlet")
 public class Controlador extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -26,31 +25,37 @@ public class Controlador extends HttpServlet {
 	private PrintWriter out;
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// Creación de la sesión. Si ya existe la utiliza
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+
+		String order = request.getParameter("order");
+		if (order != null) order = order.trim();
+		if (!validarOrden(order)) {
+			out.println("INVALID VALUE 2");
+			return;
+		}
+
+		// Si la orden es "desconectar", no creamos una nueva sesión
+		if ("desconectar".equalsIgnoreCase(order)) {
+			HttpSession session = request.getSession(false);
+			if (session != null) {
+				session.invalidate();
+			}
+			response.sendRedirect("desconectado.jsp");
+			return;
+		}
+
+		// Aquí solo obtenemos la sesión si el usuario no está desconectándose
 		HttpSession session = request.getSession();
 		session.setAttribute("idSesion", session.getId());
 		session.setAttribute("fechaCreacion", new java.util.Date(session.getCreationTime()));
 		session.setAttribute("ultimoAcceso", new java.util.Date(session.getLastAccessedTime()));
 		incrementarContadorSesion(session);
 
-		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
-
-		String order = request.getParameter("order");
-		if (order != null)
-			order = order.trim();
-		if (!validarOrden(order)) {
-			out.println("INVALID VALUE 2");
-			return;
-		}
 		switch (order.toLowerCase()) {
 		case "info":
 			procesarInfo(request, response, session);
-			break;
-		case "desconectar":
-			procesarDesconexion(request, response, session);
 			break;
 		case "ejecutar":
 			procesarConsultaSQL(request, response);
@@ -84,14 +89,7 @@ public class Controlador extends HttpServlet {
 
 		contexto.setAttribute("usuariosConectados", usuariosConectados != null ? usuariosConectados : 0);
 		contexto.setAttribute("usuariosValidados", usuariosValidados != null ? usuariosValidados : 0);
-	    request.getRequestDispatcher("/infosesion.jsp").forward(request, response);
-	}
-
-	// Método para procesar la desconexión
-	private void procesarDesconexion(HttpServletRequest request, HttpServletResponse response, HttpSession session)
-			throws ServletException, IOException {
-		session.invalidate();
-		request.getRequestDispatcher("/desconectado.jsp").forward(request, response);
+		request.getRequestDispatcher("/infosesion.jsp").forward(request, response);
 	}
 
 	private void procesarConsultaSQL(HttpServletRequest request, HttpServletResponse response)
@@ -108,7 +106,8 @@ public class Controlador extends HttpServlet {
 			if ("true".equals(request.getParameter("jstl"))) {
 				request.setAttribute("data", data);
 				request.getRequestDispatcher("index.jsp").forward(request, response);
-			} else printSql(request, response);
+			} else
+				printSql(request, response);
 		} catch (RuntimeException e) {
 			out.println("<p style=\"color: red\">Error al ejecutar la consulta: " + e.getMessage() + "</p>");
 		}

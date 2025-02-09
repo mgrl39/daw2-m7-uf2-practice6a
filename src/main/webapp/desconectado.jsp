@@ -13,8 +13,7 @@ body {
 }
 </style>
 <body>
-	<h1>Ha finalizado su sesión, gracias por utilizar nuestros
-		servicios</h1>
+	<h1>Ha finalizado su sesión, gracias por utilizar nuestros servicios</h1>
 	<a href="index.html">Ir a la pagina inicial</a>
 </body>
 </html>
