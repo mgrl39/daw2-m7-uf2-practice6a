@@ -37,4 +37,8 @@
 	<listener>
 		<listener-class>net.elpuig.Practica5.m7.webses.WebSessionListener</listener-class>
 	</listener>
+	<session-config>
+		<session-timeout>15</session-timeout>
+	</session-config>
+
 </web-app>
