@@ -266,6 +266,7 @@ public class Controlador extends HttpServlet {
 			}
 		}
 		// Guardar el nuevo valor del contador
+		System.out.printf("NUMERO: %d%n", contadorAccesos);
 		sesion.setAttribute("contadorAccesos", contadorAccesos);
 	}
 
