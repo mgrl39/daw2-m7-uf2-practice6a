@@ -16,11 +16,13 @@ import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 // 25 de novembre de 2024
 @WebServlet("/AlumnoServlet")
 public class Controlador extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static final Set<String> ORDENES_VALIDAS = Set.of("ejecutar", "info", "desconectar");
 	private PrintWriter out;
 
 	@Override
@@ -33,64 +35,80 @@ public class Controlador extends HttpServlet {
 		session.setAttribute("ultimoAcceso", new java.util.Date(session.getLastAccessedTime()));
 		incrementarContadorSesion(session);
 
-		boolean condition;
-
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 
 		String order = request.getParameter("order");
 		if (order != null)
 			order = order.trim();
-		System.out.printf("Valor recibido de 'order': [ %s ]%n", order);
-		condition = (!"Ejecutar".equalsIgnoreCase(order) && !"info".equalsIgnoreCase(order))
-				&& !"desconectar".equalsIgnoreCase(order);
-		if (order == null || order.isEmpty() || condition) {
+		if (!validarOrden(order)) {
 			out.println("INVALID VALUE 2");
 			return;
 		}
-		// Cuando el servlet reconoce a la operación ‘info’ redirecciona el flujo a una página jsp que he llamado ‘infosesion.jsp’
-		if ("info".equalsIgnoreCase(order)) {
-			HttpSession sesion = request.getSession();
-
-			sesion.setAttribute("idSesion", sesion.getId());
-			sesion.setAttribute("fechaCreacion", new Date(sesion.getCreationTime()));
-			sesion.setAttribute("ultimoAcceso", new Date(sesion.getLastAccessedTime()));
-
-			Integer contadorAccessos = (Integer) sesion.getAttribute("contadorAccessos");
-			sesion.setAttribute("contadorAccessos", contadorAccessos != null ? contadorAccessos : 0);
-
-			ServletContext contexto = getServletContext();
-			Integer usuariosConectados = (Integer) contexto.getAttribute("usuariosConectados");
-			Integer usuariosValidados = (Integer) contexto.getAttribute("usuariosValidados");
-
-			contexto.setAttribute("usuariosConectados", usuariosConectados != null ? usuariosConectados : 0);
-			contexto.setAttribute("usuariosValidados", usuariosValidados != null ? usuariosValidados : 0);
-			// ‘infosesion.jsp’ no hace nada extraño, sencillamente dibuja una tabla y muestra los valores deseados de la sesión. 
-			request.getRequestDispatcher("/infosesion.jsp").forward(request, response);
-			return;
-		} else if ("desconectar".equalsIgnoreCase(order)) {
-			session.invalidate();
-			try {
-				request.getRequestDispatcher("/desconectado.jsp").forward(request, response);
-			} catch (Exception e) {
-				out.println("Error al redirigir: " + e.getMessage());
-			}
+		switch (order.toLowerCase()) {
+		case "info":
+			procesarInfo(request, response, session);
+			break;
+		case "desconectar":
+			procesarDesconexion(request, response, session);
+			break;
+		case "ejecutar":
+			procesarConsultaSQL(request, response);
+			break;
+		default:
+			out.println("INVALID ORDER");
+			break;
 		}
+	}
 
+	private boolean validarOrden(String order) {
+		return order != null && ORDENES_VALIDAS.contains(order.toLowerCase());
+	}
+
+	// ‘infosesion.jsp’ no hace nada extraño, sencillamente dibuja una tabla y
+	// muestra los valores deseados de la sesión.
+	private void procesarInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+			throws ServletException, IOException {
+		HttpSession sesion = request.getSession();
+
+		sesion.setAttribute("idSesion", sesion.getId());
+		sesion.setAttribute("fechaCreacion", new Date(sesion.getCreationTime()));
+		sesion.setAttribute("ultimoAcceso", new Date(sesion.getLastAccessedTime()));
+
+		Integer contadorAccessos = (Integer) sesion.getAttribute("contadorAccessos");
+		sesion.setAttribute("contadorAccessos", contadorAccessos != null ? contadorAccessos : 0);
+
+		ServletContext contexto = getServletContext();
+		Integer usuariosConectados = (Integer) contexto.getAttribute("usuariosConectados");
+		Integer usuariosValidados = (Integer) contexto.getAttribute("usuariosValidados");
+
+		contexto.setAttribute("usuariosConectados", usuariosConectados != null ? usuariosConectados : 0);
+		contexto.setAttribute("usuariosValidados", usuariosValidados != null ? usuariosValidados : 0);
+	    request.getRequestDispatcher("/infosesion.jsp").forward(request, response);
+	}
+
+	// Método para procesar la desconexión
+	private void procesarDesconexion(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+			throws ServletException, IOException {
+		session.invalidate();
+		request.getRequestDispatcher("/desconectado.jsp").forward(request, response);
+	}
+
+	private void procesarConsultaSQL(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		PrintWriter out = response.getWriter();
 		String sql = request.getParameter("sql");
 		if (isNullOrEmpty(sql)) {
 			out.println("<p style=\"color: red\">Error: No se proporcionó ninguna consulta SQL</p>");
 			return;
 		}
-
 		try {
 			List<Map<String, String>> data = Alumno.executeQuery(sql);
 
 			if ("true".equals(request.getParameter("jstl"))) {
 				request.setAttribute("data", data);
 				request.getRequestDispatcher("index.jsp").forward(request, response);
-			} else
-				printSql(request, response);
+			} else printSql(request, response);
 		} catch (RuntimeException e) {
 			out.println("<p style=\"color: red\">Error al ejecutar la consulta: " + e.getMessage() + "</p>");
 		}
@@ -263,4 +281,5 @@ public class Controlador extends HttpServlet {
 		}
 		return retorno;
 	}
+
 }
