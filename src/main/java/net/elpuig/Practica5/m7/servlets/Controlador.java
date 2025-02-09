@@ -25,14 +25,16 @@ public class Controlador extends HttpServlet {
 	private PrintWriter out;
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 
 		String operacion = request.getParameter("operacion");
-		if (operacion != null) operacion = operacion.trim();
+		if (operacion != null)
+			operacion = operacion.trim();
 		if (!validarOrden(operacion)) {
-			out.println("INVALID VALUE 2");
+			out.println(webFormatter("Operacion invalida.", Protocol.GET));
 			return;
 		}
 
@@ -61,7 +63,7 @@ public class Controlador extends HttpServlet {
 			procesarConsultaSQL(request, response);
 			break;
 		default:
-			out.println("INVALID operacion");
+			out.println(webFormatter("INVALID operacion", Protocol.GET));
 			break;
 		}
 	}
@@ -97,7 +99,8 @@ public class Controlador extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		String sql = request.getParameter("sql");
 		if (isNullOrEmpty(sql)) {
-			out.println("<p style=\"color: red\">Error: No se proporcionó ninguna consulta SQL</p>");
+			out.println(webFormatter("<p style=\"color: red\">Error: No se proporcionó ninguna consulta SQL</p>",
+					Protocol.GET));
 			return;
 		}
 		try {
@@ -134,16 +137,14 @@ public class Controlador extends HttpServlet {
 			for (String columnName : data.get(0).keySet()) {
 				htmlTable += "<th>" + columnName + "</th>";
 			}
-			// System.out.printf(htmlTable + '\n');
 			htmlTable += "</tr>";
 			for (Map<String, String> row : data) {
 				htmlTable += "<tr>";
-				for (String value : row.values()) htmlTable += "<td>" + value + "</td>";
+				for (String value : row.values())
+					htmlTable += "<td>" + value + "</td>";
 				htmlTable += "</tr>";
 			}
-
 			htmlTable += "</table>";
-			// System.out.printf(htmlTable + '\n');
 			out.println(webFormatter(htmlTable, Protocol.GET));
 		} catch (RuntimeException e) {
 			out.println(webFormatter(
@@ -177,7 +178,7 @@ public class Controlador extends HttpServlet {
 
 		String operacion = request.getParameter("operacion");
 		if (operacion == null) {
-			out.println("Error: No se ha recibido el parámetro 'operacion'");
+			out.println(webFormatter("Error: No se ha recibido el parámetro 'operacion'", Protocol.POST));
 			return;
 		}
 
@@ -207,10 +208,9 @@ public class Controlador extends HttpServlet {
 					Alumno nuevoAlumno = new Alumno(Integer.parseInt(sesAlumnoID), sesAlumnoNombre, sesAlumnoCurso);
 					response.setContentType("text/html");
 					PrintWriter out = response.getWriter();
-					out.println(
-							webFormatter(nuevoAlumno.save() ? "Alumno añadido con éxito" : "Error al añadir el alumno",
-									Protocol.POST));
-					out.println("<br><a href='index.html'>Ir a la pantalla inicial</a>");
+					out.println(webFormatter(nuevoAlumno.save() ? "Alumno añadido" : "Error al añadir el alumno",
+							Protocol.POST));
+					out.println("<a href='index.html'>Ir a la pantalla inicial</a>");
 
 					// Limpiar los datos de la sesión después del alta
 					session.removeAttribute("sesAlumnoID");
@@ -219,11 +219,11 @@ public class Controlador extends HttpServlet {
 				} else {
 					response.setContentType("text/html");
 					PrintWriter out = response.getWriter();
-					out.println("Error: No se encontraron datos del alumno en la sesión.");
+					out.println(webFormatter("Error: No se encontraron datos del alumno en la sesión.", Protocol.POST));
 				}
 			}
 		} else {
-			out.println("Error: Valor de 'operacion' no válido.");
+			out.println(webFormatter("Error: Valor de 'operacion' no válido.", Protocol.POST));
 		}
 
 	}
@@ -239,8 +239,9 @@ public class Controlador extends HttpServlet {
 				return;
 			}
 			Alumno nuevoAlumno = new Alumno(Integer.parseInt(idStr), curso, nombre);
-			out.println(webFormatter(nuevoAlumno.save() ? "Alumno añadido con éxito" : "Error al añadir el alumno",
-					Protocol.POST));
+			out.println(
+					webFormatter(nuevoAlumno.save() ? "Alumno añadido" : "Error al añadir el alumno", Protocol.POST));
+			out.println("<a href='index.html'>Ir a la pantalla inicial</a>");
 		} catch (NumberFormatException e) {
 			out.println(webFormatter("Error: El ID debe ser un número válido", Protocol.POST));
 		}
