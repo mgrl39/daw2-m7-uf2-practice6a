@@ -9,7 +9,7 @@
 		<p style="color: red;">${error}</p>
 	</c:if>
 	<form action=AlumnoServlet method="post">
-		<input type="hidden" name="operacion">
+		<input type="hidden" name="order" value="validar">
 		Usuario: <input type="text" name="txtUsuario" required><br>	
 		Contraseña: <input type="password" name="txtContrasenya" required><br>
 		<input type="submit" value="validar">
